@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/ig-dev/immigrate/issues"
   },
-  "homepage": "https://github.com/ig-dev/immigrate"
+  "homepage": "https://github.com/ig-dev/immigrate",
+  "devDependencies": {
+    "chai": "^3.2.0",
+    "coffee-script": "^1.9.3",
+    "mocha": "^2.2.5"
+  }
 }
