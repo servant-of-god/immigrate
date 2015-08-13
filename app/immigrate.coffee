@@ -5,13 +5,17 @@ path = require('path')
 module.exports = (options = {}) -> new Promise (resolve, reject) ->
 	result = {}
 
-	options.packageJsonFile or= './package.json'
 	options.migrationsDirectory or= "./migrations/"
 	options.immigrateJsonFile or= "./immigrate.json"
 	options.migrateIfFresh ?= false
 	options.context ?= null
 
 	if not options.currentVersion
+		options.packageJsonFile or= findPackageJsonFile()
+		if not options.packageJsonFile
+			throw new Error("Could not find package.json.
+							 Please provide either a packageJsonFile or currentVersion option parameter")
+
 		packageJsonPath = path.resolve(options.packageJsonFile)
 		options.currentVersion = require(packageJsonPath).version
 
@@ -23,4 +27,10 @@ module.exports = (options = {}) -> new Promise (resolve, reject) ->
 		resolve(result)
 
 
-	
+findPackageJsonFile = ->
+	currentDirectory = path.dirname(module.parent.filename)
+	for i in [1..4]
+		currentPackageJsonFile = path.join(currentDirectory, 'package.json')
+		if fs.existsSync(currentPackageJsonFile)
+			return currentPackageJsonFile
+		currentDirectory = path.join(currentDirectory, '../')
