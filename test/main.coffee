@@ -18,6 +18,7 @@ cleanUp = ->
 	filesToRemove = [
 		immigrateJsonFile
 		customImmigrateJsonFile
+		resultJsonFile
 	]
 
 	for fileName in filesToRemove
