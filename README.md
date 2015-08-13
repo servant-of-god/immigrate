@@ -29,14 +29,7 @@ The `migrationsDirectory` (default: `./migrations/`) must contain files with the
 - ...
 - `setup.js`
 
-or
-- `1.0.1.js`
-- `1.2.0.js`
-- `1.12.13.js`
-- ...
-- `setup.js`
-
-The `.coffee` extension for CoffeeScript instead of `.js` is also allowed. E.g. `1.12.13.coffee`
+The `v` prefix is optional. The `.coffee` extension for CoffeeScript instead of `.js` is also allowed. E.g. `1.12.13.coffee`
 
 The versions will be parsed with the npm semver parser for node. https://github.com/npm/node-semver
 
