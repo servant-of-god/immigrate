@@ -3,12 +3,10 @@ expect = require("chai").expect
 resolve = require('path').resolve
 fs = require('fs')
 
-packageJsonFile = './test/package.json'
-customImmigrateJsonFile = './test/custom-immigrate.json'
-immigrateJsonFile = './test/immigrate.json'
-resultJsonFile = './test/result.json'
-
-requireResolvedPath = (modulePath) -> require(resolve(modulePath))
+packageJsonFile = './package.json'
+customImmigrateJsonFile = './custom-immigrate.json'
+immigrateJsonFile = './immigrate.json'
+resultJsonFile = './result.json'
 
 cleanUp = ->
 	fs.writeFileSync(resultJsonFile, JSON.stringify({
@@ -35,13 +33,13 @@ afterEach -> cleanUp()
 describe "Option Parameters", ->
 	it "Detects version from package.json if no options supplied", () ->
 		return immigrate().then (result) ->
-			packageJson = requireResolvedPath(packageJsonFile)
+			packageJson = require(packageJsonFile)
 			expect(result.version).to.equal(packageJson.version)
 
 
 	it "Writes last version to immigrate.json", ->
 		return immigrate().then ->
-			packageJson = requireResolvedPath(packageJsonFile)
+			packageJson = require(packageJsonFile)
 			immigrateJson = require(immigrateJsonFile)
 			expect(packageJson.version).to.equal(immigrateJson.version)
 
@@ -71,8 +69,8 @@ describe "Option Parameters", ->
 		})
 
 		return promise.then ->
-			packageJson = requireResolvedPath(packageJsonFile)
-			immigrateJson = requireResolvedPath(customImmigrateJsonFile)
+			packageJson = require(packageJsonFile)
+			immigrateJson = require(customImmigrateJsonFile)
 			expect(packageJson.version).to.equal(immigrateJson.version)
 
 
@@ -82,9 +80,9 @@ describe "Option Parameters", ->
 		})
 
 		return promise.then (result) ->
-			packageJson = requireResolvedPath(packageJsonFile)
-			immigrateJson = requireResolvedPath(immigrateJsonFile)
-			resultJson = requireResolvedPath(resultJsonFile)
+			packageJson = require(packageJsonFile)
+			immigrateJson = require(immigrateJsonFile)
+			resultJson = require(resultJsonFile)
 
 			expect(packageJson.version).to.equal(immigrateJson.version)
 			expect(resultJson.migrations).to.be.above(0)
