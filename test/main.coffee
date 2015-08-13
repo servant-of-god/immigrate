@@ -3,7 +3,7 @@ expect = require("chai").expect
 resolve = require('path').resolve
 fs = require('fs')
 
-packageJsonFile = './package.json'
+packageJsonFile = './test/package.json'
 customImmigrateJsonFile = './custom-immigrate.json'
 immigrateJsonFile = './immigrate.json'
 resultJsonFile = './test/result.json'
