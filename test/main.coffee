@@ -42,7 +42,7 @@ describe "Option Parameters", ->
 	it "Writes last version to immigrate.json", ->
 		return immigrate().then ->
 			packageJson = requireResolvedPath(packageJsonFile)
-			immigrateJson = require('../immigrate.json')
+			immigrateJson = require(immigrateJsonFile)
 			expect(packageJson.version).to.equal(immigrateJson.version)
 
 
