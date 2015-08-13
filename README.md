@@ -10,7 +10,7 @@ immigrate({
 	// OR
 	packageJsonFile: "./package.json" // default
 	
-	migrateIfFresh: true,
+	migrateIfFresh: false,
 
 	migrationsDirectory: "./migrations/",
 
@@ -34,6 +34,8 @@ The `v` prefix is optional. The `.coffee` extension for CoffeeScript instead of 
 The versions will be parsed with the npm semver parser for node. https://github.com/npm/node-semver
 
 The `currentVersion` can be defined either as an option, or automatically parsed from the `packageJsonFile` (default: `./package.json`). If no option is set, the `package.json` file is used.
+
+By default, the module will look for the `package.json` file in the parent directories of the file which require()d immigrate.js.
 
 If the `currentVersion` increased since the last time immigrate.js was executed, then all intermediate version scripts from the `migrationsDirectory` will be run. The most recent version to which has been migrated will be recorded in the `immigrateJsonFile` (default: `/.immigrate.json`).
 
