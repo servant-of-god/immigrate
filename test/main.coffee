@@ -28,3 +28,19 @@ describe "Option Parameters", ->
 		promise.catch (error) ->
 			throw error
 			done()
+
+
+	it "Writes last version to immigrate.json", (done) ->
+		cleanUp()
+
+		packageJson = require('../package.json')
+		promise = immigrate()
+
+		promise.then ->
+			immigrateJson = require('../immigrate.json')
+			expect(packageJson.version).to.equal(immigrateJson.version)
+			done()
+
+		promise.catch (error) ->
+			throw error
+			done()
