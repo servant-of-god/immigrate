@@ -43,6 +43,9 @@ If either the `setup.js` file is present, or `migrateIfFresh` is set to `false`,
 
 The files in the `migrationsDirectory` can return a function through `module.exports`. If so, the `context` option will be passed as the first argument. The `context` option will also be the context of the module.exports function.
 
+If the function returned by a `vX.X.X.js` returns a promise, execution will hold until the promise is resolved. Then migration continues.
+
+The `immigrate()` returns a promise that will be resolved once all immigrations have completed.
 Context example:
 
 ```
@@ -69,4 +72,18 @@ module.exports = function () {
 
 ```
 
+Promise example:
+```
+// migrations/v1.12.13.js
+Promise = require('promise');
+
+module.exports = function () {
+	return new Promise(function (resolve, reject) {
+		updateSomethingAsync(function (err, res) {
+			if (err) reject(err);
+			else resolve(res);
+		});
+	});
+}
+```
 
