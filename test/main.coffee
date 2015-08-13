@@ -77,3 +77,21 @@ describe "Option Parameters", ->
 			throw error
 			done()
 	
+
+	it "custom options.immigrateJsonFile contains result", (done) ->
+		cleanUp()
+
+		packageJson = require('../package.json')
+		promise = immigrate({
+			immigrateJsonFile: customImmigrateJsonFile
+		})
+
+		promise.then ->
+			immigrateJson = require(resolve(customImmigrateJsonFile))
+			expect(packageJson.version).to.equal(immigrateJson.version)
+			done()
+
+		promise.catch (error) ->
+			throw error
+			done()
+	
