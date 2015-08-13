@@ -37,6 +37,8 @@ The `currentVersion` can be defined either as an option, or automatically parsed
 
 By default, the module will look for the `package.json` file in the parent directories of the file which require()d immigrate.js.
 
+The parent directory of the `package.json` file will be used as base directory for all other files by default ( for `migrationsDirectory` and `immigrateJsonFile`)
+
 If the `currentVersion` increased since the last time immigrate.js was executed, then all intermediate version scripts from the `migrationsDirectory` will be run. The most recent version to which has been migrated will be recorded in the `immigrateJsonFile` (default: `/.immigrate.json`).
 
 The file `setup.js` is an optional script file. If present, it will be executed instead of the `vX.X.X.js` scripts when immigrate.js called for the first time in a project directory.
