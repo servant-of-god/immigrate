@@ -4,8 +4,8 @@ resolve = require('path').resolve
 fs = require('fs')
 
 packageJsonFile = './test/package.json'
-customImmigrateJsonFile = './custom-immigrate.json'
-immigrateJsonFile = './immigrate.json'
+customImmigrateJsonFile = './test/custom-immigrate.json'
+immigrateJsonFile = './test/immigrate.json'
 resultJsonFile = './test/result.json'
 
 requireResolvedPath = (modulePath) -> require(resolve(modulePath))
