@@ -33,94 +33,60 @@ afterEach -> cleanUp()
 
 
 describe "Option Parameters", ->
-	it "Detects version from package.json if no options supplied", (done) ->
-		promise = immigrate()
-
-		promise.then (result) ->
+	it "Detects version from package.json if no options supplied", () ->
+		return immigrate().then (result) ->
 			packageJson = requireResolvedPath(packageJsonFile)
 			expect(result.version).to.equal(packageJson.version)
-			done()
-
-		promise.catch (error) ->
-			throw error
-			done()
 
 
-	it "Writes last version to immigrate.json", (done) ->
-		promise = immigrate()
-
-		promise.then ->
+	it "Writes last version to immigrate.json", ->
+		return immigrate().then ->
 			packageJson = requireResolvedPath(packageJsonFile)
 			immigrateJson = require('../immigrate.json')
 			expect(packageJson.version).to.equal(immigrateJson.version)
-			done()
-
-		promise.catch (error) ->
-			throw error
-			done()
 
 
-	it "options.currentVersion overwrites default ./package.json version", (done) ->
+	it "options.currentVersion overwrites default ./package.json version", ->
 		promise = immigrate({
 			currentVersion: '999.999.999'
 		})
 
-		promise.then (result) ->
+		return promise.then (result) ->
 			expect(result.version).to.equal('999.999.999')
-			done()
 	
-		promise.catch (error) ->
-			throw error
-			done()
-	
-	it "options.currentVersion overwrites options.packageJsonFile", (done) ->
+
+	it "options.currentVersion overwrites options.packageJsonFile", ->
 		promise = immigrate({
 			currentVersion: '999.999.999'
 			packageJsonFile: './package.json'
 		})
 
-		promise.then (result) ->
+		return promise.then (result) ->
 			expect(result.version).to.equal('999.999.999')
-			done()
-	
-		promise.catch (error) ->
-			throw error
-			done()
 	
 
-	it "custom options.immigrateJsonFile contains result", (done) ->
+	it "custom options.immigrateJsonFile contains result", ->
 		promise = immigrate({
 			immigrateJsonFile: customImmigrateJsonFile
 		})
 
-		promise.then ->
+		return promise.then ->
 			packageJson = requireResolvedPath(packageJsonFile)
 			immigrateJson = requireResolvedPath(customImmigrateJsonFile)
 			expect(packageJson.version).to.equal(immigrateJson.version)
-			done()
-
-		promise.catch (error) ->
-			throw error
-			done()
 
 
-	it "Migrates initially if options.migrateIfFresh is true", (done) ->
+	it "Migrates initially if options.migrateIfFresh is true", ->
 		promise = immigrate({
 			migrateIfFresh: true
 		})
 
-		promise.then (result) ->
+		return promise.then (result) ->
 			packageJson = requireResolvedPath(packageJsonFile)
 			immigrateJson = requireResolvedPath(immigrateJsonFile)
 			resultJson = requireResolvedPath(resultJsonFile)
 
 			expect(packageJson.version).to.equal(immigrateJson.version)
 			expect(resultJson.migrations).to.be.above(0)
-
-			done()
-
-		promise.catch (error) ->
-			throw error
-			done()
 
 	
