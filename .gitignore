@@ -1,2 +1,4 @@
 node_modules
 /test/result.json
+/test/custom-immigrate.json
+/test/immigrate.json
