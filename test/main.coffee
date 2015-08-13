@@ -3,9 +3,12 @@ expect = require("chai").expect
 resolve = require('path').resolve
 fs = require('fs')
 
+packageJsonFile = './package.json'
 customImmigrateJsonFile = './custom-immigrate.json'
 immigrateJsonFile = './immigrate.json'
 resultJsonFile = './test/result.json'
+
+requireResolvedPath = (modulePath) -> require(resolve(modulePath))
 
 cleanUp = ->
 	fs.writeFileSync(resultJsonFile, JSON.stringify({
@@ -30,10 +33,10 @@ afterEach -> cleanUp()
 
 describe "Option Parameters", ->
 	it "Detects version from package.json if no options supplied", (done) ->
-		packageJson = require('../package.json')
 		promise = immigrate()
 
 		promise.then (result) ->
+			packageJson = requireResolvedPath(packageJsonFile)
 			expect(result.version).to.equal(packageJson.version)
 			done()
 
@@ -43,10 +46,10 @@ describe "Option Parameters", ->
 
 
 	it "Writes last version to immigrate.json", (done) ->
-		packageJson = require('../package.json')
 		promise = immigrate()
 
 		promise.then ->
+			packageJson = requireResolvedPath(packageJsonFile)
 			immigrateJson = require('../immigrate.json')
 			expect(packageJson.version).to.equal(immigrateJson.version)
 			done()
@@ -85,12 +88,12 @@ describe "Option Parameters", ->
 	
 
 	it "custom options.immigrateJsonFile contains result", (done) ->
-		packageJson = require('../package.json')
 		promise = immigrate({
 			immigrateJsonFile: customImmigrateJsonFile
 		})
 
 		promise.then ->
+			packageJson = requireResolvedPath(packageJsonFile)
 			immigrateJson = require(resolve(customImmigrateJsonFile))
 			expect(packageJson.version).to.equal(immigrateJson.version)
 			done()
@@ -106,7 +109,7 @@ describe "Option Parameters", ->
 		})
 
 		promise.then (result) ->
-			packageJson = require(resolve('./package.json'))
+			packageJson = requireResolvedPath(packageJsonFile)
 			immigrateJson = require(resolve(immigrateJsonFile))
 			resultJson = require(resolve(resultJsonFile))
 
