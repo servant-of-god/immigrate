@@ -1,6 +1,6 @@
 immigrate = require('../app/immigrate')
 expect = require("chai").expect
-resolve = require('path').resolve
+path = require('path')
 fs = require('fs')
 
 packageJsonFile = './package.json'
@@ -56,7 +56,7 @@ describe "Option Parameters", ->
 	it "options.currentVersion overwrites options.packageJsonFile", ->
 		promise = immigrate({
 			currentVersion: '999.999.999'
-			packageJsonFile: './package.json'
+			packageJsonFile: path.join(__dirname, packageJsonFile)
 		})
 
 		return promise.then (result) ->
