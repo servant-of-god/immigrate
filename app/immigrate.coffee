@@ -2,6 +2,7 @@ Promise = require('promise')
 fs = require('fs')
 path = require('path')
 
+
 module.exports = (options = {}) -> new Promise (resolve, reject) ->
 	result = {}
 
@@ -12,28 +13,11 @@ module.exports = (options = {}) -> new Promise (resolve, reject) ->
 	writeImmigrateJsonFile(options.immigrateJsonFile, result)
 	resolve(result)
 
+
 writeImmigrateJsonFile = (fileName, result) ->
 	resultJson = JSON.stringify(result, null, 2)
 
 	fs.writeFileSync(fileName, resultJson)
-
-
-findPackageJsonFile = (packageJsonFile) ->
-	if packageJsonFile
-		packageJsonFile = path.resolve(packageJsonFile)
-		if not fs.existsSync(packageJsonFile)
-			throw new Error('Could not find the supplied package.json file. Leave option blank for auto-detection.')
-		return packageJsonFile
-
-	currentDirectory = path.dirname(module.parent.filename)
-	searchParentDirectoryCount = 4
-
-	for i in [1..searchParentDirectoryCount]
-		currentPackageJsonFile = path.join(currentDirectory, 'package.json')
-		if fs.existsSync(currentPackageJsonFile)
-			return currentPackageJsonFile
-		currentDirectory = path.join(currentDirectory, '../')
-	return null
 
 
 normalizeOptions = (options) ->
@@ -61,6 +45,24 @@ normalizeOptions = (options) ->
 		throw new Error("Could not find migrationsDirectory (#{options.migrationsDirectory})")
 
 	return options
+
+
+findPackageJsonFile = (packageJsonFile) ->
+	if packageJsonFile
+		packageJsonFile = path.resolve(packageJsonFile)
+		if not fs.existsSync(packageJsonFile)
+			throw new Error('Could not find the supplied package.json file. Leave option blank for auto-detection.')
+		return packageJsonFile
+
+	currentDirectory = path.dirname(module.parent.filename)
+	searchParentDirectoryCount = 4
+
+	for i in [1..searchParentDirectoryCount]
+		currentPackageJsonFile = path.join(currentDirectory, 'package.json')
+		if fs.existsSync(currentPackageJsonFile)
+			return currentPackageJsonFile
+		currentDirectory = path.join(currentDirectory, '../')
+	return null
 
 
 findFile = (baseDirectory, fileName) ->

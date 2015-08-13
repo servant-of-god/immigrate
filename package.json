@@ -4,7 +4,7 @@
   "description": "Automatizes migrations upon package updates",
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/.bin/mocha --reporter spec --compilers coffee:coffee-script/register"
+    "test": "./node_modules/.bin/mocha ./test/tests.coffee --reporter spec --compilers coffee:coffee-script/register"
   },
   "repository": {
     "type": "git",

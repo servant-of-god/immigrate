@@ -1,6 +1,6 @@
 {
   "description": "THIS PACKAGE.JSON IS USED FOR TESTING PURPOSES ONLY",
-  "version": "12.34.567",
+  "version": "1.2.3",
   "name": "immigrate-js-tests",
   "main": "index.js",
   "license": "MIT"
