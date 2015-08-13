@@ -4,10 +4,16 @@ resolve = require('path').resolve
 fs = require('fs')
 
 customImmigrateJsonFile = './custom-immigrate.json'
+immigrateJsonFile = './immigrate.json'
+resultJsonFile = './test/result.json'
 
 cleanUp = ->
+	fs.writeFileSync(resultJsonFile, JSON.stringify({
+		migrations: 0
+	}))
+
 	filesToRemove = [
-		'./immigrate.json'
+		immigrateJsonFile
 		customImmigrateJsonFile
 	]
 
@@ -92,4 +98,25 @@ describe "Option Parameters", ->
 		promise.catch (error) ->
 			throw error
 			done()
+
+
+	it "Migrates initially if options.migrateIfFresh is true", (done) ->
+		promise = immigrate({
+			migrateIfFresh: true
+		})
+
+		promise.then (result) ->
+			packageJson = require(resolve('./package.json'))
+			immigrateJson = require(resolve(immigrateJsonFile))
+			resultJson = require(resolve(resultJsonFile))
+
+			expect(packageJson.version).to.equal(immigrateJson.version)
+			expect(resultJson.migrations).to.be.above(0)
+
+			done()
+
+		promise.catch (error) ->
+			throw error
+			done()
+
 	
