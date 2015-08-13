@@ -7,6 +7,7 @@ packageJsonFile = './package.json'
 customImmigrateJsonFile = './custom-immigrate.json'
 immigrateJsonFile = './immigrate.json'
 resultJsonFile = './result.json'
+currentVersionFake = '999.999.999'
 
 cleanUp = ->
 	fs.writeFileSync(resultJsonFile, JSON.stringify({
@@ -46,21 +47,21 @@ describe "Option Parameters", ->
 
 	it "options.currentVersion overwrites default ./package.json version", ->
 		promise = immigrate({
-			currentVersion: '999.999.999'
+			currentVersion: currentVersionFake
 		})
 
 		return promise.then (result) ->
-			expect(result.version).to.equal('999.999.999')
+			expect(result.version).to.equal(currentVersionFake)
 	
 
 	it "options.currentVersion overwrites options.packageJsonFile", ->
 		promise = immigrate({
-			currentVersion: '999.999.999'
+			currentVersion: currentVersionFake
 			packageJsonFile: path.join(__dirname, packageJsonFile)
 		})
 
 		return promise.then (result) ->
-			expect(result.version).to.equal('999.999.999')
+			expect(result.version).to.equal(currentVersionFake)
 	
 
 	it "custom options.immigrateJsonFile contains result", ->
