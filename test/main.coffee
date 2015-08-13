@@ -94,7 +94,7 @@ describe "Option Parameters", ->
 
 		promise.then ->
 			packageJson = requireResolvedPath(packageJsonFile)
-			immigrateJson = require(resolve(customImmigrateJsonFile))
+			immigrateJson = requireResolvedPath(customImmigrateJsonFile)
 			expect(packageJson.version).to.equal(immigrateJson.version)
 			done()
 
@@ -110,8 +110,8 @@ describe "Option Parameters", ->
 
 		promise.then (result) ->
 			packageJson = requireResolvedPath(packageJsonFile)
-			immigrateJson = require(resolve(immigrateJsonFile))
-			resultJson = require(resolve(resultJsonFile))
+			immigrateJson = requireResolvedPath(immigrateJsonFile)
+			resultJson = requireResolvedPath(resultJsonFile)
 
 			expect(packageJson.version).to.equal(immigrateJson.version)
 			expect(resultJson.migrations).to.be.above(0)
