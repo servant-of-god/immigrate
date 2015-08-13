@@ -8,7 +8,7 @@ module.exports = (options = {}) -> new Promise (resolve, reject) ->
 	options.packageJsonFile or= './package.json'
 	options.migrationsDirectory or= "./migrations/"
 	options.immigrateJsonFile or= "./immigrate.json"
-	options.migrateIfFresh ?= true
+	options.migrateIfFresh ?= false
 	options.context ?= null
 
 	if not options.currentVersion
