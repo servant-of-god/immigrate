@@ -44,3 +44,20 @@ describe "Option Parameters", ->
 		promise.catch (error) ->
 			throw error
 			done()
+
+
+	it "options.currentVersion overwrites ./package.json version", (done) ->
+		cleanUp()
+
+		promise = immigrate({
+			currentVersion: '999.999.999'
+		})
+
+		promise.then (result) ->
+			expect(result.version).to.equal('999.999.999')
+			done()
+	
+
+		promise.catch (error) ->
+			throw error
+			done()
