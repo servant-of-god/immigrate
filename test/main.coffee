@@ -16,10 +16,14 @@ cleanUp = ->
 			fs.unlinkSync(fileName)
 
 
+before -> cleanUp()
+
+
+afterEach -> cleanUp()
+
+
 describe "Option Parameters", ->
 	it "Detects version from package.json if no options supplied", (done) ->
-		cleanUp()
-
 		packageJson = require('../package.json')
 		promise = immigrate()
 
@@ -33,8 +37,6 @@ describe "Option Parameters", ->
 
 
 	it "Writes last version to immigrate.json", (done) ->
-		cleanUp()
-
 		packageJson = require('../package.json')
 		promise = immigrate()
 
@@ -49,8 +51,6 @@ describe "Option Parameters", ->
 
 
 	it "options.currentVersion overwrites default ./package.json version", (done) ->
-		cleanUp()
-
 		promise = immigrate({
 			currentVersion: '999.999.999'
 		})
@@ -79,8 +79,6 @@ describe "Option Parameters", ->
 	
 
 	it "custom options.immigrateJsonFile contains result", (done) ->
-		cleanUp()
-
 		packageJson = require('../package.json')
 		promise = immigrate({
 			immigrateJsonFile: customImmigrateJsonFile
