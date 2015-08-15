@@ -10,6 +10,7 @@ resultJsonFile = './result.json'
 currentVersionFake = '999.999.999'
 
 cleanUp = ->
+	console.log('Cleaning up')
 	fs.writeFileSync(resultJsonFile, JSON.stringify({
 		migrations: 0
 	}))
@@ -21,6 +22,7 @@ cleanUp = ->
 	]
 
 	for fileName in filesToRemove
+		fileName = path.resolve('./test/', fileName)
 		if fs.existsSync(fileName)
 			fs.unlinkSync(fileName)
 
