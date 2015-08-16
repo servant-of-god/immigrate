@@ -178,7 +178,10 @@ describe "Option Parameters", ->
 		return immigrate({
 			currentVersion: '1.2.0'
 		}).then ->
-			fs.unlinkSync(resultJsonFile)
+			try
+				fs.unlinkSync(resultJsonFile)
+			catch
+				null
 
 			return immigrate().then ->
 				resultJson = readJsonFile(resultJsonFile)
@@ -192,10 +195,13 @@ describe "Option Parameters", ->
 	
 	
 	it "Makes context accessible to version files", ->
-		return immigrate({context: {foo: 'bar'}}).then ->
+		return immigrate({
+			migrateIfFresh: true
+			context: {foo: 'bar'}
+		}).then ->
 			resultJson = readJsonFile(resultJsonFile)
-			expect(resultJson['context-found'].to.be.true)
-			expect(resultJson['argument-found'].to.be.true)
+			expect(resultJson['context-found']).to.be.true
+			expect(resultJson['argument-found']).to.be.true
 
 	
 	it "Handles absolute packageJsonFile path", ->
