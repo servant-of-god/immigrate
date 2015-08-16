@@ -15,6 +15,9 @@ currentVersionFake = '999.999.999'
 
 readJsonFile = (fileName) -> JSON.parse(fs.readFileSync(fileName))
 
+createSetupFile = ->
+	fs.writeFileSync(setupFile, "module.exports = require('../helpers').recordVersionLater('setup', 700)")
+
 
 fromTestDirectory = (fileName) ->
 	return path.relative(testDirectory, fileName)
