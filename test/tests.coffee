@@ -9,6 +9,10 @@ immigrateJsonFile = './immigrate.json'
 resultJsonFile = './result.json'
 currentVersionFake = '999.999.999'
 
+
+readJsonFile = (fileName) -> JSON.parse(fs.readFileSync(fileName))
+
+
 cleanUp = ->
 	console.log('Cleaning up')
 	fs.writeFileSync(resultJsonFile, JSON.stringify({
@@ -36,14 +40,14 @@ afterEach -> cleanUp()
 describe "Option Parameters", ->
 	it "Detects version from package.json if no options supplied", () ->
 		return immigrate().then (result) ->
-			packageJson = require(packageJsonFile)
+			packageJson = readJsonFile(packageJsonFile)
 			expect(result.version).to.equal(packageJson.version)
 
 
 	it "Writes last version to immigrate.json", ->
 		return immigrate().then ->
-			packageJson = require(packageJsonFile)
-			immigrateJson = require(immigrateJsonFile)
+			packageJson = readJsonFile(packageJsonFile)
+			immigrateJson = readJsonFile(immigrateJsonFile)
 			expect(packageJson.version).to.equal(immigrateJson.version)
 
 
@@ -72,8 +76,8 @@ describe "Option Parameters", ->
 		})
 
 		return promise.then ->
-			packageJson = require(packageJsonFile)
-			immigrateJson = require(customImmigrateJsonFile)
+			packageJson = readJsonFile(packageJsonFile)
+			immigrateJson = readJsonFile(customImmigrateJsonFile)
 			expect(packageJson.version).to.equal(immigrateJson.version)
 
 
@@ -83,9 +87,9 @@ describe "Option Parameters", ->
 		})
 
 		return promise.then (result) ->
-			packageJson = require(packageJsonFile)
-			immigrateJson = require(immigrateJsonFile)
-			resultJson = require(resultJsonFile)
+			packageJson = readJsonFile(packageJsonFile)
+			immigrateJson = readJsonFile(immigrateJsonFile)
+			resultJson = readJsonFile(resultJsonFile)
 
 			expect(packageJson.version).to.equal(immigrateJson.version)
 			expect(resultJson.migrations).to.be.above(0)
