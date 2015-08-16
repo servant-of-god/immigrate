@@ -56,10 +56,11 @@ normalizeOptions = (options) ->
 
 	baseDirectory = getBaseDirectory(options.packageJsonFile)
 
-	try
-		options.immigrateJsonFile = findFile(baseDirectory, options.immigrateJsonFile)
-	catch
-		options.immigrateJsonFile = path.join(baseDirectory, options.immigrateJsonFile)
+	if not path.isAbsolute(options.immigrateJsonFile)
+		try
+			options.immigrateJsonFile = findFile(baseDirectory, options.immigrateJsonFile)
+		catch
+			options.immigrateJsonFile = path.join(baseDirectory, options.immigrateJsonFile)
 	
 	try
 		options.migrationsDirectory = findFile(baseDirectory, options.migrationsDirectory)
