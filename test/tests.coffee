@@ -151,7 +151,7 @@ describe "Option Parameters", ->
 
 		return immigrate().then ->
 			resultJson = readJsonFile(resultJsonFile)
-			expect(resultJson.executedVersions).to.deep.equal(['1.0.1', '1.2.0', '1.2.1', '1.2.2', 'setup'])
+			expect(resultJson.executedVersions).to.deep.equal(['setup' ,'1.0.1', '1.2.0', '1.2.1', '1.2.2'])
 
 
 	it "Only runs setup on first execution", ->
