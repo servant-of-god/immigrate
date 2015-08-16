@@ -3,10 +3,10 @@ expect = require("chai").expect
 path = require('path')
 fs = require('fs')
 
-packageJsonFile = './package.json'
-customImmigrateJsonFile = './custom-immigrate.json'
-immigrateJsonFile = './immigrate.json'
-resultJsonFile = './result.json'
+packageJsonFile = './test/package.json'
+customImmigrateJsonFile = './test/custom-immigrate.json'
+immigrateJsonFile = './test/immigrate.json'
+resultJsonFile = './test/result.json'
 currentVersionFake = '999.999.999'
 
 
@@ -26,7 +26,6 @@ cleanUp = ->
 	]
 
 	for fileName in filesToRemove
-		fileName = path.resolve('./test/', fileName)
 		if fs.existsSync(fileName)
 			fs.unlinkSync(fileName)
 
@@ -63,7 +62,7 @@ describe "Option Parameters", ->
 	it "options.currentVersion overwrites options.packageJsonFile", ->
 		promise = immigrate({
 			currentVersion: currentVersionFake
-			packageJsonFile: path.join(__dirname, packageJsonFile)
+			packageJsonFile: packageJsonFile
 		})
 
 		return promise.then (result) ->
