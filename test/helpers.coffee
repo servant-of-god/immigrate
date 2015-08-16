@@ -3,12 +3,15 @@ fs = require('fs')
 path = require('path')
 
 
+readJsonFile = (fileName) -> JSON.parse(fs.readFileSync(fileName))
+
+
 recordFileName = path.resolve('./test/result.json')
 
 
 recordVersion = (version) ->
 	try
-		recordFileJson = require(recordFileName)
+		recordFileJson = readJsonFile(recordFileName)
 	catch
 		recordFileJson = { executedVersions: [] }
 	
