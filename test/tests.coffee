@@ -7,6 +7,7 @@ packageJsonFile = './test/package.json'
 customImmigrateJsonFile = './test/custom-immigrate.json'
 immigrateJsonFile = './test/immigrate.json'
 resultJsonFile = './test/result.json'
+setupFile = './test/migrations/setup.coffee'
 testDirectory = './test/'
 currentVersionFake = '999.999.999'
 
@@ -27,6 +28,7 @@ cleanUp = ->
 		immigrateJsonFile
 		customImmigrateJsonFile
 		resultJsonFile
+		setupFile
 	]
 
 	for fileName in filesToRemove
@@ -95,6 +97,126 @@ describe "Option Parameters", ->
 			resultJson = readJsonFile(resultJsonFile)
 
 			expect(packageJson.version).to.equal(immigrateJson.version)
-			expect(resultJson.migrations).to.be.above(0)
+			expect(resultJson.executedVersions.length).to.be.above(3)
 
 	
+	it "Accepts v-prefix for version files", ->
+		return immigrate({
+			currentVersion: '0.0.1'
+		}).then immigrate().then ->
+			resultJson = readJsonFile(resultJsonFile)
+			expect(resultJson.executedVersions).to.include('1.2.1')
+
+
+	it "Accepts prefixless version files", ->
+		return immigrate({
+			currentVersion: '0.0.1'
+		}).then immigrate().then ->
+			resultJson = readJsonFile(resultJsonFile)
+			expect(resultJson.executedVersions).to.include('1.0.1')
+
+
+	it "Accepts .js file extension", ->
+		return immigrate({
+			currentVersion: '0.0.1'
+		}).then immigrate().then ->
+			resultJson = readJsonFile(resultJsonFile)
+			expect(resultJson.executedVersions).to.include('1.0.1')
+
+	
+
+	it "Accepts .coffee file extension", ->
+		return immigrate({
+			currentVersion: '0.0.1'
+		}).then immigrate().then ->
+			resultJson = readJsonFile(resultJsonFile)
+			expect(resultJson.executedVersions).to.include('1.2.0')
+
+
+	it "Proper promise recognition and chaining", ->
+		return immigrate({
+			currentVersion: '0.0.1'
+		}).then immigrate().then ->
+			resultJson = readJsonFile(resultJsonFile)
+			expect(resultJson.executedVersions).to.deep.equal(['1.0.1', '1.2.0', '1.2.1', '1.2.2'])
+
+
+	it "Handles migrateIfFresh and setup for first execution", ->
+		createSetupFile()
+
+		return immigrate().then ->
+			resultJson = readJsonFile(resultJsonFile)
+			expect(resultJson.executedVersions).to.deep.equal(['1.0.1', '1.2.0', '1.2.1', '1.2.2', 'setup'])
+
+
+	it "Only runs setup on first execution", ->
+		createSetupFile()
+		return immigrate().then ->
+			resultJson = readJsonFile(resultJsonFile)
+			expect(resultJson.executedVersions).to.include('setup')
+			expect(resultJson.executedVersions).to.have.length(1)
+
+
+	it "Does not run setup file again after first execution", ->
+		createSetupFile()
+		return immigrate({
+			currentVersion: '0.0.1'
+		}).then ->
+			fs.unlinkSync(resultJsonFile)
+
+			return immigrate().then ->
+				resultJson = readJsonFile(resultJsonFile)
+				expect(resultJson.executedVersions).to.not.include('setup')
+
+
+	it "Only executes files in version upgrade range", ->
+		return immigrate({
+			currentVersion: '1.2.0'
+		}).then ->
+			fs.unlinkSync(resultJsonFile)
+
+			return immigrate().then ->
+				resultJson = readJsonFile(resultJsonFile)
+				expect(resultJson.executedVersions).to.deep.equal(['1.2.1', '1.2.2',])
+	
+
+	it "Creates immigrate.json even if no scripts are executed", ->
+		return immigrate({currentVersion: '99.99.99'}).then ->
+			immigrateJson = readJsonFile(immigrateJsonFile)
+			expect(immigrateJson.version).to.equal('99.99.99')
+	
+	
+	it "Makes context accessible to version files", ->
+		return immigrate({context: {foo: 'bar'}}).then ->
+			resultJson = readJsonFile(resultJsonFile)
+			expect(resultJson['context-found'].to.be.true)
+			expect(resultJson['argument-found'].to.be.true)
+
+	
+	it "Handles absolute packageJsonFile path", ->
+		return immigrate({
+			packageJsonFile: path.resolve(packageJsonFile)
+		}).then (result) ->
+			packageJson = readJsonFile(packageJsonFile)
+			expect(result.version).to.equal(packageJson.version)
+	
+
+	it "Handles absolute migrationsDirectory path", ->
+		createSetupFile()
+
+		return immigrate({
+			migrationsDirectory: path.resolve(migrationsDirectory)
+		}).then ->
+			resultJson = readJsonFile(resultJsonFile)
+			expect(resultJson.executedVersions).to.include('setup')
+
+
+
+	it "Handles absolute immigrateJsonFile path", ->
+		return immigrate({
+			currentVersion: currentVersionFake
+			immigrateJsonFile: path.resolve(immigrateJsonFile)
+		}).then ->
+			immigrateJson = readJsonFile(immigrateJsonFile)
+			expect(immigrateJson.version).to.equal(currentVersionFake)
+
