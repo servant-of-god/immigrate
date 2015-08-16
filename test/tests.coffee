@@ -7,14 +7,18 @@ packageJsonFile = './test/package.json'
 customImmigrateJsonFile = './test/custom-immigrate.json'
 immigrateJsonFile = './test/immigrate.json'
 resultJsonFile = './test/result.json'
+testDirectory = './test/'
 currentVersionFake = '999.999.999'
 
 
 readJsonFile = (fileName) -> JSON.parse(fs.readFileSync(fileName))
 
 
+fromTestDirectory = (fileName) ->
+	return path.relative(testDirectory, fileName)
+
+
 cleanUp = ->
-	console.log('Cleaning up')
 	fs.writeFileSync(resultJsonFile, JSON.stringify({
 		migrations: 0
 	}))
@@ -62,7 +66,7 @@ describe "Option Parameters", ->
 	it "options.currentVersion overwrites options.packageJsonFile", ->
 		promise = immigrate({
 			currentVersion: currentVersionFake
-			packageJsonFile: packageJsonFile
+			packageJsonFile:packageJsonFile
 		})
 
 		return promise.then (result) ->
@@ -71,7 +75,7 @@ describe "Option Parameters", ->
 
 	it "custom options.immigrateJsonFile contains result", ->
 		promise = immigrate({
-			immigrateJsonFile: customImmigrateJsonFile
+			immigrateJsonFile: fromTestDirectory(customImmigrateJsonFile)
 		})
 
 		return promise.then ->
