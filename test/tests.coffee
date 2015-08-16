@@ -103,7 +103,7 @@ describe "Option Parameters", ->
 	it "Accepts v-prefix for version files", ->
 		return immigrate({
 			currentVersion: '0.0.1'
-		}).then immigrate().then ->
+		}).then -> immigrate().then ->
 			resultJson = readJsonFile(resultJsonFile)
 			expect(resultJson.executedVersions).to.include('1.2.1')
 
@@ -111,7 +111,7 @@ describe "Option Parameters", ->
 	it "Accepts prefixless version files", ->
 		return immigrate({
 			currentVersion: '0.0.1'
-		}).then immigrate().then ->
+		}).then -> immigrate().then ->
 			resultJson = readJsonFile(resultJsonFile)
 			expect(resultJson.executedVersions).to.include('1.0.1')
 
@@ -119,7 +119,7 @@ describe "Option Parameters", ->
 	it "Accepts .js file extension", ->
 		return immigrate({
 			currentVersion: '0.0.1'
-		}).then immigrate().then ->
+		}).then -> immigrate().then ->
 			resultJson = readJsonFile(resultJsonFile)
 			expect(resultJson.executedVersions).to.include('1.0.1')
 
@@ -128,7 +128,7 @@ describe "Option Parameters", ->
 	it "Accepts .coffee file extension", ->
 		return immigrate({
 			currentVersion: '0.0.1'
-		}).then immigrate().then ->
+		}).then -> immigrate().then ->
 			resultJson = readJsonFile(resultJsonFile)
 			expect(resultJson.executedVersions).to.include('1.2.0')
 
@@ -136,7 +136,7 @@ describe "Option Parameters", ->
 	it "Proper promise recognition and chaining", ->
 		return immigrate({
 			currentVersion: '0.0.1'
-		}).then immigrate().then ->
+		}).then -> immigrate().then ->
 			resultJson = readJsonFile(resultJsonFile)
 			expect(resultJson.executedVersions).to.deep.equal(['1.0.1', '1.2.0', '1.2.1', '1.2.2'])
 
