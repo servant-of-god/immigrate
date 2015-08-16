@@ -1,1 +1,1 @@
-module.exports = require('../helpers').recordVersionLater('1.2.0', 700)
+module.exports = require('../helpers').recordVersionLater('1.2.0', 200)
