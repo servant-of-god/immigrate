@@ -28,7 +28,7 @@ module.exports = (options = {}) -> new Promise (resolve, reject) ->
 		setupFile = findSetupFile(options)
 		migrationFiles.unshift setupFile if setupFile
 	
-	executeMigrations(migrationFiles).then ->
+	executeMigrations(options, migrationFiles).then ->
 		state.version = options.currentVersion
 
 		writeImmigrateJsonFile(options.immigrateJsonFile, state)
@@ -153,22 +153,23 @@ findSetupFile = (options) ->
 			}
 
 
-executeMigrations = (migrationFiles) -> return executeNextMigration(migrationFiles)
+executeMigrations = (options, migrationFiles) ->
+	executeNextMigration = ->
+		return Promise.resolve() if not migrationFiles.length
+
+		file = migrationFiles.shift()
+
+		migration = require(file.fileName)
+
+		if typeof migration is "function"
+			migration = migration.call(options.context, options.context)
+
+		if typeof migration?.then is "function"
+			return migration.then -> executeNextMigration()
+		
+		else return executeNextMigration()
 
 
-executeNextMigration = (migrationFiles) ->
-	return Promise.resolve() if not migrationFiles.length
-
-	file = migrationFiles.shift()
-
-	migration = require(file.fileName)
-
-	if typeof migration is "function"
-		migration = migration()
-
-	if typeof migration?.then is "function"
-		return migration.then -> executeNextMigration(migrationFiles)
-	
-	else return executeNextMigration(migrationFiles)
+	return executeNextMigration()
 
 
