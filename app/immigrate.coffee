@@ -4,18 +4,26 @@ fs = require('fs')
 path = require('path')
 
 
-module.exports = (options = {}) -> new Promise (resolve, reject) ->
-	result = {}
+readJsonFile = (fileName) -> JSON.parse(fs.readFileSync(fileName))
 
+
+module.exports = (options = {}) -> new Promise (resolve, reject) ->
 	options = normalizeOptions(options)
 
-	migrationFiles = getSortedMigrationFiles(options)
+	try
+		state = readJsonFile(options.immigrateJsonFile)
+	catch
+		state = {
+			version: '0.0.0'
+		}
 
-	result.version = options.currentVersion
+	migrationFiles = getSortedMigrationFiles(options, state)
+
+	state.version = options.currentVersion
 
 	writeImmigrateJsonFile(options.immigrateJsonFile, result)
 
-	resolve(result)
+	resolve(state)
 
 
 writeImmigrateJsonFile = (fileName, result) ->
@@ -94,7 +102,7 @@ getBaseDirectory = (packageJsonFile) ->
 		return process.cwd()
 
 
-getSortedMigrationFiles = (options) ->
+getSortedMigrationFiles = (options, state) ->
 	files = []
 
 	for fileName in fs.readdirSync(options.migrationsDirectory)
@@ -108,6 +116,10 @@ getSortedMigrationFiles = (options) ->
 			fileName: filePath
 			version: semver.clean(fileNameWithoutExtension)
 		})
+
+	if state.version
+		files = files.filter (file) ->
+			return semver.gt(file.version, state.version)
 
 	files = files.sort (fileLeft, fileRight) ->
 		return 1 if semver.gt(fileLeft.version, fileRight.version)
