@@ -21,10 +21,12 @@
   "homepage": "https://github.com/ig-dev/immigrate",
   "devDependencies": {
     "chai": "^3.2.0",
+    "clear-require": "^1.0.1",
     "coffee-script": "^1.9.3",
     "mocha": "^2.2.5"
   },
   "dependencies": {
-    "promise": "^7.0.4"
+    "promise": "^7.0.4",
+    "semver": "^5.0.1"
   }
 }
