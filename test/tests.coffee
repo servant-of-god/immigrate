@@ -2,6 +2,7 @@ immigrate = require('../app/immigrate')
 expect = require("chai").expect
 path = require('path')
 fs = require('fs')
+clearRequire = require('clear-require')
 
 packageJsonFile = './test/package.json'
 customImmigrateJsonFile = './test/custom-immigrate.json'
@@ -34,6 +35,7 @@ cleanUp = ->
 	for fileName in filesToRemove
 		if fs.existsSync(fileName)
 			fs.unlinkSync(fileName)
+	clearRequire.all()
 
 
 before -> cleanUp()
