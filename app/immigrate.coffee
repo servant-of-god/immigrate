@@ -12,24 +12,34 @@ module.exports = (options = {}) -> new Promise (resolve, reject) ->
 
 	try
 		state = readJsonFile(options.immigrateJsonFile)
+		isFresh = no
 	catch
-		state = {
+		state =
 			version: '0.0.0'
-		}
+		
+		isFresh = yes
 
 	migrationFiles = getSortedMigrationFiles(options, state)
 
-	state.version = options.currentVersion
+	if isFresh and not options.migrateIfFresh
+		migrationFiles = []
+	
+	if isFresh
+		setupFile = findSetupFile(options)
+		migrationFiles.unshift setupFile if setupFile
+	
+	executeMigrations(migrationFiles).then ->
+		state.version = options.currentVersion
 
-	writeImmigrateJsonFile(options.immigrateJsonFile, result)
+		writeImmigrateJsonFile(options.immigrateJsonFile, state)
 
-	resolve(state)
+		resolve(state)
 
 
-writeImmigrateJsonFile = (fileName, result) ->
-	resultJson = JSON.stringify(result, null, 2)
+writeImmigrateJsonFile = (fileName, state) ->
+	stateJson = JSON.stringify(state, null, 2)
 
-	fs.writeFileSync(fileName, resultJson)
+	fs.writeFileSync(fileName, stateJson)
 
 
 normalizeOptions = (options) ->
@@ -127,4 +137,35 @@ getSortedMigrationFiles = (options, state) ->
 		return 0
 
 	return files
+
+
+findSetupFile = (options) ->
+	for fileName in fs.readdirSync(options.migrationsDirectory)
+		fileNameWithoutExtension = fileName.split('.')[..-2].join('.')
+		if fileNameWithoutExtension is "setup"
+			filePath = path.join(options.migrationsDirectory, fileName)
+			return {
+				fileName: filePath
+				version: options.currentVersion
+			}
+
+
+executeMigrations = (migrationFiles) -> return executeNextMigration(migrationFiles)
+
+
+executeNextMigration = (migrationFiles) ->
+	return Promise.resolve() if not migrationFiles.length
+
+	file = migrationFiles.shift()
+
+	migration = require(file.fileName)
+
+	if typeof migration is "function"
+		migration = migration()
+
+	if typeof migration?.then is "function"
+		return migration.then -> executeNextMigration(migrationFiles)
+	
+	else return executeNextMigration(migrationFiles)
+
 
