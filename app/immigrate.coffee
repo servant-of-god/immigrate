@@ -130,6 +130,9 @@ getSortedMigrationFiles = (options, state) ->
 	if state.version
 		files = files.filter (file) ->
 			return semver.gt(file.version, state.version)
+	
+	files = files.filter (file) ->
+		return not semver.gt(file.version, options.currentVersion)
 
 	files = files.sort (fileLeft, fileRight) ->
 		return 1 if semver.gt(fileLeft.version, fileRight.version)
