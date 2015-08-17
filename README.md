@@ -11,7 +11,7 @@
 
 ```js
 // app.js
-immigrate = require('immigrate')
+immigrate = require('immigrate');
 
 immigrate(); // that's it
 ```
@@ -39,7 +39,7 @@ If you would like to execute all migration files also the first time immigrate.j
 The CoffeeScript extension (`.coffee`) can also be used (for all files) instead of `.js`.
 
 ### Migration files
-The files in the `migrationsDirectory` must follow a valid semver version format, such as `v1.2.3.js` or `1.2.3.js`. Those files will be `require`d and executed when a version update is detected, from lowest version to highest.
+The files in the `migrationsDirectory` must follow a valid [semver](https://github.com/npm/node-semver) version format, such as `v1.2.3.js` or `1.2.3.js`. Those files will be `require`d and executed when a version update is detected, from lowest version to highest.
 
 If the `module.exports` of any of those migration files returns a function, it will be executed.
 
@@ -83,8 +83,8 @@ module.exports = function () {
 
 ```
 
-Promise example:
-```
+### Promise example
+```js
 // migrations/v1.12.13.js
 Promise = require('promise');
 
@@ -103,4 +103,6 @@ By default, the module will look for the `package.json` file in the parent direc
 
 The parent directory of the `package.json` file will be used as base directory for all other files by default if you supply relative paths (for `migrationsDirectory` and `immigrateJsonFile`).
 
+### License
+[God License](https://github.com/servant-of-god/god-license)
 
