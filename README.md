@@ -31,7 +31,6 @@ migrationsDirectory | string \<optional\>  | Default: `./migrations/`. Path to t
 immigrateJsonFile   | string \<optional\>  | Default: `./immigrate.json`. Path to the JSON file that should be used by immigrate.js to record the last version that has been migrated.
 context             | object \<optional\>  | An object that will be passed as argument to the migration files (see below).
 
-
 ### Usage
 The first time when immigrate.js is run, it will look for the `setup.js` file in the `migrationsDirectory`. The `setup.js` file is optional. At any other time, immigrate.js will check if the version of the main package increased since the last time it was run, and execute any intermediate immigration files from the `migrationsDirectory`.
 
