@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/ig-dev/immigrate.git"
+    "url": "https://github.com/servant-of-god/immigrate.git"
   },
   "keywords": [
     "Mirations"
@@ -17,9 +17,9 @@
   "author": "Ignatius <ignatius.inbox@gmail.com>",
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {
-    "url": "https://github.com/ig-dev/immigrate/issues"
+    "url": "https://github.com/servant-of-god/immigrate/issues"
   },
-  "homepage": "https://github.com/ig-dev/immigrate",
+  "homepage": "https://github.com/servant-of-god/immigrate",
   "devDependencies": {
     "chai": "^3.2.0",
     "clear-require": "^1.0.1",
