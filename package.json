@@ -2,8 +2,9 @@
   "name": "immigrate",
   "version": "0.1.0",
   "description": "Automatizes migrations upon package updates",
-  "main": "index.js",
+  "main": "immigrate.js",
   "scripts": {
+    "prepublish": "coffee -b -o ./ ./src/immigrate.coffee",
     "test": "./node_modules/.bin/mocha ./test/tests.coffee"
   },
   "repository": {
