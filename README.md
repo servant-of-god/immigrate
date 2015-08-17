@@ -1,77 +1,85 @@
 # immigrate.js
 ## Automatize migrations for your Node.js packages
 
-### API
+### Example
+- `app.js`
+- `package.json`
+- `migrations/v1.2.0.js`
+- `migrations/v1.3.0.js`
+- `migrations/v1.4.0.js`
+- `migrations/setup.js`
+
+```js
+// app.js
+immigrate = require('immigrate')
+
+immigrate(); // that's it
 ```
+
+immigrate.js will record the version from the package.json file. If the package.json version increases from a previous run, intermediate migration files will be executed. A context can be passed to the migration files.
+
+### Options
+
+`immigrate({ ... })` can receive an optional options object.
+
+parameter           | type                 | description
+-----               | -----                | -----
+currentVersion      | string \<optional\>  | Overwrites automatic version detection with custom version.
+packageJsonFile     | string \<optional\>  | Declare custom path to package.json file.
+migrateIfFresh      | boolean \<optional\> | Default: `false`. Execute all migrations the first time when immigrate.js is run. Otherwise, only `setup.js` will be executed.
+migrationsDirectory | string \<optional\>  | Default: `./migrations/`. Path to the directory containing the version migration files.
+immigrateJsonFile   | string \<optional\>  | Default: `./immigrate.json`. Path to the JSON file that should be used by immigrate.js to record the last version that has been migrated.
+context             | object \<optional\>  | An object that will be passed as argument to the migration files (see below).
+
+
+### Usage
+The first time when immigrate.js is run, it will look for the `setup.js` file in the `migrationsDirectory`. The `setup.js` file is optional. At any other time, immigrate.js will check if the version of the main package increased since the last time it was run, and execute any intermediate immigration files from the `migrationsDirectory`.
+
+If you would like to execute all migration files also the first time immigrate.js is called, up to the present version of the package, then set `migrateIfFresh` to `true`.
+
+The CoffeeScript extension (`.coffee`) can also be used (for all files) instead of `.js`.
+
+### Migration files
+The files in the `migrationsDirectory` must follow a valid semver version format, such as `v1.2.3.js` or `1.2.3.js`. Those files will be `require`d and executed when a version update is detected, from lowest version to highest.
+
+If the `module.exports` of any of those migration files returns a function, it will be executed.
+
+If the `module.exports` of a migration file returns a promise, the promise will be resolved before the next migration will be called. `module.exports` may also return a function which returns a promise.
+
+If the migration file `exports` a function, then the `context` option parameter will be passed as first argument. The `context` will also be the functions context (accessible through `this). E.g.
+
+```js
+module.exports = function(context) {...}
+```
+
+`immigrate()` returns a promise that will be resolved once all migrations have completed.
+
+### Example with context and promises
+
+```js
+// app.js
 immigrate = require('immigrate');
 
-immigrate({
-	currentVersion: "1.2.3", // or "v1.2.3"
-	// OR
-	packageJsonFile: "./package.json" // default
-	
-	migrateIfFresh: false,
-
-	migrationsDirectory: "./migrations/",
-
-	context: { /* ... */ }
-
-	immigrateJsonFile: "./immigrate.json"
-})
-```
-
-All options are optional
-
-The `migrationsDirectory` (default: `./migrations/`) must contain files with the file name format of
-- `v1.0.1.js`
-- `v1.2.0.js`
-- `v1.12.13.js`
-- ...
-- `setup.js`
-
-The `v` prefix is optional. The `.coffee` extension for CoffeeScript instead of `.js` is also allowed. E.g. `1.12.13.coffee`
-
-The versions will be parsed with the npm semver parser for node. https://github.com/npm/node-semver
-
-The `currentVersion` can be defined either as an option, or automatically parsed from the `packageJsonFile` (default: `./package.json`). If no option is set, the `package.json` file is used.
-
-By default, the module will look for the `package.json` file in the parent directories of the file which require()d immigrate.js.
-
-The parent directory of the `package.json` file will be used as base directory for all other files by default ( for `migrationsDirectory` and `immigrateJsonFile`)
-
-If the `currentVersion` increased since the last time immigrate.js was executed, then all intermediate version scripts from the `migrationsDirectory` will be run. The most recent version to which has been migrated will be recorded in the `immigrateJsonFile` (default: `/.immigrate.json`).
-
-The file `setup.js` is an optional script file. If present, it will be executed instead of the `vX.X.X.js` scripts when immigrate.js called for the first time in a project directory.
-
-If either the `setup.js` file is present, or `migrateIfFresh` is set to `false`, then the `vX.X.X.js` files will not be executed at the first time when immigrate.js is called. Instead migration starts at the version at which immigrate.js is first called.
-
-The files in the `migrationsDirectory` can return a function through `module.exports`. If so, the `context` option will be passed as the first argument. The `context` option will also be the context of the module.exports function.
-
-If the function returned by a `vX.X.X.js` returns a promise, execution will hold until the promise is resolved. Then migration continues.
-
-The `immigrate()` returns a promise that will be resolved once all immigrations have completed.
-Context example:
-
-```
-// index.js
-immigrate = require('immigrate');
-
-immigrate({
+promise = immigrate({
 	context: {
 		database: app.database
 	}
-})
+});
+
+promise.then(function () { /* migrations have completed */ });
 ```
 
-```
-// migrations/v1.12.13.js
+```js
+// migrations/v1.23.45.js
 module.exports = function (context) {
-	context.database.updateSomething();
+	// ...
+	return context.database.updateSomething();
 }
 
-// -- OR --
+// or...
 module.exports = function () {
-	this.database.updateSomething();
+	// ...
+	return this.database.updateSomething();
 }
 
 ```
@@ -90,4 +98,10 @@ module.exports = function () {
 	});
 }
 ```
+
+### Details
+By default, the module will look for the `package.json` file in the parent directories of the file which require()d immigrate.js.
+
+The parent directory of the `package.json` file will be used as base directory for all other files by default if you supply relative paths (for `migrationsDirectory` and `immigrateJsonFile`).
+
 
